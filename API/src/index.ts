@@ -1,5 +1,5 @@
 // API/src/index.ts
-import './Setup'
+import './Setup';
 import Koa from 'koa';
 import KoaRouter from '@koa/router';
 import { ApolloServer } from 'apollo-server-koa';
@@ -7,7 +7,7 @@ import { generateGQLSchema } from './Library/generateGQLSchema';
 import { ensureDbConnection } from './Library/getDbConnection';
 
 async function startAPI(): Promise<void> {
-  const db = ensureDbConnection()
+  const db = ensureDbConnection();
   const server = new Koa();
   const serverRouter = new KoaRouter();
 
@@ -27,4 +27,4 @@ async function startAPI(): Promise<void> {
   apiServer.installSubscriptionHandlers(httpServer);
 }
 
-startAPI()
+startAPI();

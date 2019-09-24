@@ -38,16 +38,12 @@ export class DockerPubSub {
         stdout: true
       });
       Containers.push({ id: args.containerId, stream });
-      await container.start()
+      await container.start();
     }
 
-    const files = pEvent.iterator(
-      stream,
-      'data',
-      {
-        resolutionEvents: ['end']
-      }
-    );
+    const files = pEvent.iterator(stream, 'data', {
+      resolutionEvents: ['end']
+    });
 
     return files;
   }
