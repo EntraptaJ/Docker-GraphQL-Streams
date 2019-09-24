@@ -29,8 +29,7 @@ export class FilesPubSub {
     const container = docker.getContainer(dbContainer.containerId);
 
     const archiveStream = await container.getArchive({ path: args.path });
-    const iterator = pEvent.iterator(archiveStream, 'data', { resolutionEvents: ['end'] })
-    return iterator;
+    return pEvent.iterator(archiveStream, 'data', { resolutionEvents: ['end'] })
   }
   public async unsubscribe(subId: number) {}
 }

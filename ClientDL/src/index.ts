@@ -28,7 +28,7 @@ async function startClientDL(): Promise<void> {
 
   await timeout(25000);
 
-  const stuff: Buffer[] = [];
+  const tarStream = extract('tmp');
 
   client
     .subscribe<{ containerFiles: string }>({
@@ -38,13 +38,12 @@ async function startClientDL(): Promise<void> {
       async next({ data: { containerFiles } }) {
         try {
           const buffer = await decompress(Buffer.from(containerFiles, 'hex'));
-          stuff.push(buffer);
+          tarStream.write(buffer)
         } catch {}
       },
       complete() {
-        const buffer = intoStream(Buffer.concat(stuff));
-        const tarStream = extract('tmp');
-        buffer.pipe(tarStream);
+        tarStream.end()
+        console.log('Done')
       }
     });
 }
