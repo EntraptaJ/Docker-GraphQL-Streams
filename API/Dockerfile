@@ -1,6 +1,6 @@
 FROM mhart/alpine-node:latest
 WORKDIR /app
-COPY package.json package-lock.json tsconfig.json tsconfig.build.json ./
+COPY package.json package-lock.json tsconfig.json ./
 RUN npm ci
 COPY src ./src/
 RUN NODE_ENV=production npm run build
