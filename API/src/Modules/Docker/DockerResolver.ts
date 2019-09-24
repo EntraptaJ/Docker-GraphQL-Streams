@@ -1,10 +1,7 @@
 // API/src/Modules/Docker/DockerResolver.ts
-import { tar } from 'compressing';
 import Docker from 'dockerode';
-import { readFile, remove } from 'fs-extra';
-import { compress } from 'iltorb';
+import { compressStream } from 'iltorb';
 import pEvent from 'p-event';
-import tarStream from 'tar-fs';
 import {
   Arg,
   Mutation,
@@ -63,21 +60,18 @@ export class DockerResolver {
     const dbContainer = await DockerContainer.findOneOrFail(containerId);
     const container = await docker.getContainer(dbContainer.containerId);
 
-    const readStream = await container.getArchive({ path: path });
-    const decompressStream = tarStream.extract(dbContainer.id);
+    let data: Buffer[] = [];
 
-    readStream.pipe(
-      decompressStream,
-      { end: true }
-    );
-    await pEvent(decompressStream, 'finish');
+    const archiveStream = await container.getArchive({ path: path });
 
-    await tar.compressDir(dbContainer.id, `${dbContainer.id}.tar`);
-    const fileStream = await readFile(`${dbContainer.id}.tar`);
+    const brotliStream = compressStream();
+    brotliStream.on('data', chunk => data.push(chunk));
 
-    Promise.all([remove(`${dbContainer.id}.tar`), remove(dbContainer.id)]);
+    archiveStream.pipe(brotliStream);
 
-    return (await compress(fileStream)).toString('base64');
+    await pEvent(brotliStream, 'end');
+
+    return Buffer.concat(data).toString('base64');
   }
 
   @Mutation(() => Boolean)
