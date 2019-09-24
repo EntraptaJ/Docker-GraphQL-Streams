@@ -1,6 +1,5 @@
 import gql from 'graphql-tag';
 import { decompress } from 'iltorb';
-import pEvent from 'p-event'
 import { extract } from 'tar-fs-fixed';
 import { client, createContainer, startContainer, removeContainer } from './Docker';
 
@@ -36,7 +35,6 @@ async function startClientDL(): Promise<void> {
       },
       async complete() {
         tarStream.end();
-        await pEvent(tarStream, 'end')
         console.log('Done');
         await removeContainer(container.id)
         process.exit(0)
