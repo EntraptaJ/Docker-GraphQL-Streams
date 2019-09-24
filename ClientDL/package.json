@@ -1,0 +1,36 @@
+{
+  "name": "clientdl",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/iltorb": "^2.3.0",
+    "@types/node": "^12.7.5",
+    "@types/tar-fs": "^1.16.1",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "apollo-cache-inmemory": "^1.6.3",
+    "apollo-client": "^2.6.4",
+    "apollo-link-http": "^1.5.16",
+    "apollo-link-ws": "^1.0.19",
+    "fs-extra": "^8.1.0",
+    "graphql": "^14.5.7",
+    "graphql-tag": "^2.10.1",
+    "iltorb": "^2.4.3",
+    "into-stream": "^5.1.0",
+    "isomorphic-unfetch": "^3.0.0",
+    "p-event": "^4.1.0",
+    "subscriptions-transport-ws": "^0.9.16",
+    "tar-fs": "^2.0.0",
+    "tar-stream": "^2.1.0",
+    "ws": "^7.1.2"
+  }
+}

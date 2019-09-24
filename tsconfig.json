@@ -1,0 +1,18 @@
+{
+  "exclude": ["node_modules", "mobile", "web", "api"],
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "lib": ["esnext", "esnext.asynciterable"],
+    "allowJs": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "paths": {
+      "API/*": ["API/src/*"]
+    },
+    "esModuleInterop": true
+  }
+}
