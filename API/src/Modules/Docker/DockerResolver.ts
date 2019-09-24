@@ -1,6 +1,6 @@
 // API/src/Modules/Docker/DockerResolver.ts
 import Docker from 'dockerode';
-import { compressStream } from 'iltorb';
+import { compressStream, compress } from 'iltorb';
 import pEvent from 'p-event';
 import {
   Arg,
@@ -14,6 +14,7 @@ import { DockerContainer } from './DockerModel';
 import { Containers, logsPubSub } from './LogsPubSub';
 import { generateENVArgs } from './Utils/Args';
 import { DockerEnvironment } from './Environment';
+import { filesPubSub } from './FilesPubSub';
 
 export const docker = new Docker();
 
@@ -101,10 +102,18 @@ export class DockerResolver {
       return test;
     }
   })
-  public ContainerLogs(
+  public containerLogs(
     @Arg('containerId') containerId: string,
     @Root() stuff: Buffer
   ): String {
     return stuff.toString();
+  }
+
+  @Subscription(() => String, {
+    // @ts-ignore
+    subscribe: async (a, args) => filesPubSub.subscribe(args)
+  })
+  async containerFiles(@Arg('containerId') containerId: string, @Arg('path') path: string, @Root() root: Buffer): Promise<string> {
+    return (await compress(root)).toString('hex')
   }
 }

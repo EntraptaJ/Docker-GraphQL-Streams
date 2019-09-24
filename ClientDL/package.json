@@ -30,6 +30,7 @@
     "p-event": "^4.1.0",
     "subscriptions-transport-ws": "^0.9.16",
     "tar-fs": "^2.0.0",
+    "tar-fs-fixed": "^2.0.6",
     "tar-stream": "^2.1.0",
     "ws": "^7.1.2"
   }

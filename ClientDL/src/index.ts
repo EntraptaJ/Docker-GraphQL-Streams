@@ -1,39 +1,52 @@
 import gql from 'graphql-tag';
-import { decompressStream } from 'iltorb';
+import { decompress } from 'iltorb';
 import intoStream from 'into-stream';
 import pEvent from 'p-event';
-import { extract } from 'tar-fs';
+import { extract } from 'tar-fs-fixed';
 import {
   client,
   createContainer,
   removeContainer,
-  startContainer
-} from './Container';
+  startContainer,
+  pullImage
+} from './Docker';
 
 const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+const controllerGit = 'https://github.com/Auto-Systems/vCenter-Controller.git';
+const folder = controllerGit.replace(/.*\/(\w.*).git/, '$1');
+
 async function startClientDL(): Promise<void> {
-  const container = await createContainer('postgres:11-alpine');
+  // const successfulPull = await pullImage('docker.pkg.github.com/kristianfjones/auto-deploy/moduledl')
+  // console.log('Pull Successful: ', successfulPull)
+  const container = await createContainer(
+    'docker.pkg.github.com/kristianfjones/auto-deploy/moduledl',
+    [{ key: 'TYPE', value: folder }, { key: 'GIT_URL', value: controllerGit }]
+  );
 
   await startContainer(container.id);
 
-  await timeout(10000);
+  await timeout(25000);
 
-  const {
-    data: { createTar }
-  } = await client.mutate<{ createTar: string }>({
-    mutation: gql`mutation { createTar(          containerId: "${container.id}"
-  path: "/var/lib/postgresql/data") }`
-  });
-  const brotliStream = decompressStream();
-  const bufferStream = intoStream(Buffer.from(createTar, 'base64'));
-  const extractStream = extract('tmp');
-  brotliStream.pipe(extractStream);
-  bufferStream.pipe(brotliStream);
+  const stuff: Buffer[] = [];
 
-  await pEvent(extractStream, 'finish');
-  console.log('Finished');
-  await removeContainer(container.id);
+  client
+    .subscribe<{ containerFiles: string }>({
+      query: gql`subscription { containerFiles(containerId: "${container.id}", path: "/${folder}") }`
+    })
+    .subscribe({
+      async next({ data: { containerFiles } }) {
+        try {
+          const buffer = await decompress(Buffer.from(containerFiles, 'hex'));
+          stuff.push(buffer);
+        } catch {}
+      },
+      complete() {
+        const buffer = intoStream(Buffer.concat(stuff));
+        const tarStream = extract('tmp');
+        buffer.pipe(tarStream);
+      }
+    });
 }
 
 startClientDL();
