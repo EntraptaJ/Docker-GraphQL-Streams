@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import { decompress } from 'iltorb';
 import { extract } from 'tar-fs-fixed';
-import { client, createContainer, startContainer } from './Docker';
+import { client, createContainer, startContainer, removeContainer } from './Docker';
 
 const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -33,9 +33,11 @@ async function startClientDL(): Promise<void> {
           tarStream.write(buffer);
         } catch {}
       },
-      complete() {
+      async complete() {
         tarStream.end();
         console.log('Done');
+        await removeContainer(container.id)
+        process.exit(0)
       }
     });
 }
