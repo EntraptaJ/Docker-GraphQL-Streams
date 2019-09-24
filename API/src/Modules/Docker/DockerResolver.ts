@@ -27,15 +27,13 @@ export class DockerResolver {
   @Mutation(() => DockerContainer)
   async runContainer(@Arg('image') image: string): Promise<DockerContainer> {
     const container = await docker.createContainer({
-      Image: 'docker.pkg.github.com/kristianfjones/auto-deploy/moduledl:latest',
-      Env: [
-        'TYPE=Controllers',
-        'GIT_URL=https://github.com/Auto-Systems/vCenter-Controller.git'
-      ]
+      Image: image
     });
+
     const newContainer = await DockerContainer.create({
       containerId: container.id
     }).save();
+
     return newContainer;
   }
 
