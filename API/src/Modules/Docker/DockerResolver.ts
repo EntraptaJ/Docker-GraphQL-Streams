@@ -90,9 +90,7 @@ export class DockerResolver {
   async removeContainer(@Arg('Id') Id: string): Promise<boolean> {
     const { containerId } = await DockerContainer.findOneOrFail(Id);
     const container = docker.getContainer(containerId);
-
-    await container.stop();
-    await container.remove();
+    await container.remove({ force: true });
     return true;
   }
 
