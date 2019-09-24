@@ -12,6 +12,8 @@ import {
 } from 'type-graphql';
 import { DockerContainer } from './DockerModel';
 import { Containers, logsPubSub } from './LogsPubSub';
+import { generateENVArgs } from './Utils/Args';
+import { DockerEnvironment } from './Environment';
 
 export const docker = new Docker();
 
@@ -22,9 +24,13 @@ export class DockerResolver {
     return 'HelloWorld';
   }
   @Mutation(() => DockerContainer)
-  async runContainer(@Arg('image') image: string): Promise<DockerContainer> {
+  async createContainer(
+    @Arg('image') image: string,
+    @Arg('env', () => [DockerEnvironment]) env: DockerEnvironment[]
+  ): Promise<DockerContainer> {
     const container = await docker.createContainer({
-      Image: image
+      Image: image,
+      Env: generateENVArgs(env)
     });
 
     const newContainer = await DockerContainer.create({
@@ -32,6 +38,12 @@ export class DockerResolver {
     }).save();
 
     return newContainer;
+  }
+
+  @Mutation(() => Boolean)
+  async pullImage(@Arg('image') image: string): Promise<boolean> {
+    await docker.pull(image, {});
+    return true;
   }
 
   @Mutation(() => Boolean)
