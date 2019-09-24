@@ -17,12 +17,3 @@ jobs:
         password: ${{ secrets.DOCKER_GITHUB_PASSWORD }}
         registry: docker.pkg.github.com
         path: API
-    - name: Publish to Registry
-      uses: KristianFJones/Publish-Docker-Github-Action@master
-      with:
-        dockerfile: ClientDL/Dockerfile
-        name: docker.pkg.github.com/kristianfjones/docker-graphql-streams/clientdl
-        username: ${{ secrets.DOCKER_GITHUB_USERNAME }}
-        password: ${{ secrets.DOCKER_GITHUB_PASSWORD }}
-        registry: docker.pkg.github.com
-        path: ClientDL
