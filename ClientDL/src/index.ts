@@ -1,15 +1,7 @@
 import gql from 'graphql-tag';
 import { decompress } from 'iltorb';
-import intoStream from 'into-stream';
-import pEvent from 'p-event';
 import { extract } from 'tar-fs-fixed';
-import {
-  client,
-  createContainer,
-  removeContainer,
-  startContainer,
-  pullImage
-} from './Docker';
+import { client, createContainer, startContainer } from './Docker';
 
 const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -38,12 +30,12 @@ async function startClientDL(): Promise<void> {
       async next({ data: { containerFiles } }) {
         try {
           const buffer = await decompress(Buffer.from(containerFiles, 'hex'));
-          tarStream.write(buffer)
+          tarStream.write(buffer);
         } catch {}
       },
       complete() {
-        tarStream.end()
-        console.log('Done')
+        tarStream.end();
+        console.log('Done');
       }
     });
 }

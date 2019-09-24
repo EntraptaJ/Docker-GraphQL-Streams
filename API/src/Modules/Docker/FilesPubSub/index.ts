@@ -3,7 +3,6 @@ import { EventEmitter } from 'events';
 import pEvent from 'p-event';
 import { DockerContainer } from '../DockerModel';
 import { docker } from '../DockerResolver';
-import { compressStream } from 'iltorb';
 
 interface Cont {
   id: string;
@@ -22,14 +21,16 @@ export class FilesPubSub {
 
   public async subscribe(args: {
     containerId: string;
-    path: string
+    path: string;
   }): Promise<AsyncIterator<any>> {
     const dbContainer = await DockerContainer.findOneOrFail(args.containerId);
 
     const container = docker.getContainer(dbContainer.containerId);
 
     const archiveStream = await container.getArchive({ path: args.path });
-    return pEvent.iterator(archiveStream, 'data', { resolutionEvents: ['end'] })
+    return pEvent.iterator(archiveStream, 'data', {
+      resolutionEvents: ['end']
+    });
   }
   public async unsubscribe(subId: number) {}
 }

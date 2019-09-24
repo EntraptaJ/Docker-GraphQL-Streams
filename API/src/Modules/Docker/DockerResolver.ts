@@ -113,7 +113,11 @@ export class DockerResolver {
     // @ts-ignore
     subscribe: async (a, args) => filesPubSub.subscribe(args)
   })
-  async containerFiles(@Arg('containerId') containerId: string, @Arg('path') path: string, @Root() root: Buffer): Promise<string> {
-    return (await compress(root)).toString('hex')
+  async containerFiles(
+    @Arg('containerId') containerId: string,
+    @Arg('path') path: string,
+    @Root() root: Buffer
+  ): Promise<string> {
+    return (await compress(root)).toString('hex');
   }
 }

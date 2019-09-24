@@ -7,8 +7,14 @@ type DockerContainer {
   id: ID!
 }
 
+input DockerEnvironment {
+  key: String!
+  value: String!
+}
+
 type Mutation {
-  runContainer(image: String!): DockerContainer!
+  createContainer(env: [DockerEnvironment!]!, image: String!): DockerContainer!
+  pullImage(image: String!): Boolean!
   execCommand(command: String!, containerId: String!): Boolean!
   startContainer(Id: String!): Boolean!
   createTar(path: String!, containerId: String!): String!
@@ -20,5 +26,6 @@ type Query {
 }
 
 type Subscription {
-  ContainerLogs(containerId: String!): String!
+  containerLogs(containerId: String!): String!
+  containerFiles(path: String!, containerId: String!): String!
 }

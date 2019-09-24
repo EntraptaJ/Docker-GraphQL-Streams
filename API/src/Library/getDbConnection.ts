@@ -6,7 +6,7 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 import { AlreadyHasActiveConnectionError } from 'typeorm/error/AlreadyHasActiveConnectionError';
 
 export function getConnectionArgs(
-  test: boolean = false,
+  test: boolean = false
 ): PostgresConnectionOptions {
   return {
     type: 'postgres',
@@ -17,10 +17,10 @@ export function getConnectionArgs(
     host: config.db.host,
     entities: [
       resolve(`${__dirname}/../Modules/**/*Model.ts`),
-      resolve(`${__dirname}/../Modules/**/*Model.js`),
+      resolve(`${__dirname}/../Modules/**/*Model.js`)
     ],
     synchronize: true || config.env === 'development',
-    logging: true,
+    logging: true
   };
 }
 
