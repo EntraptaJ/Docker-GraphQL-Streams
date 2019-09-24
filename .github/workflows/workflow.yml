@@ -17,7 +17,6 @@ jobs:
         password: ${{ secrets.DOCKER_GITHUB_PASSWORD }}
         registry: docker.pkg.github.com
         path: API
-        cache: true
     - name: Publish to Registry
       uses: KristianFJones/Publish-Docker-Github-Action@master
       with:
@@ -27,4 +26,3 @@ jobs:
         password: ${{ secrets.DOCKER_GITHUB_PASSWORD }}
         registry: docker.pkg.github.com
         path: ClientDL
-        cache: true
