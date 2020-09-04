@@ -39,7 +39,7 @@
     "reflect-metadata": "^0.1.13",
     "tar-fs": "^2.0.0",
     "tar-stream": "^2.1.0",
-    "type-graphql": "^0.17.5",
+    "type-graphql": "^0.17.6",
     "typeorm": "^0.2.19"
   }
 }
